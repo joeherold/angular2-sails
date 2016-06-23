@@ -149,12 +149,14 @@ ngOnInit() {
     // or
     letl opts = {
         url: "http://localhost:1337",
-        transports: [...],
-        headers: {...}
+        transports: ['polling', 'websocket'],
+        headers: {...},
+        ...
     }
     this._sailsService.connect(opts);
 }
 ```
+for more information, please visit [sailsjs.org Documentation for SailsSocket Properties](http://sailsjs.org/documentation/reference/web-sockets/socket-client/sails-socket/properties)
 
 this is handy, when you develop with angular-cli (localhost:4200) and the ng serve command
 and your sails app runs separately e.g on localhost:1337
@@ -170,6 +172,8 @@ The following methods are implemented in the SailsService and will always return
 - delete(path,data):Observable
 - request(options):Observable
 - on(eventEntity):Observable
+
+for more information, please visit [sailsjs.org Documentation for SailsSocket Methods](http://sailsjs.org/documentation/reference/web-sockets/socket-client/sails-socket/methods)
 
 You then have to subscribe to that Observable, to get the data.
 
