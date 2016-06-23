@@ -159,7 +159,7 @@ You then have to subscribe to that Observable, to get the data.
 ```html
 
 <ul>
-    <li *ngFor="let user in users$">{{user.firstname}} {{user.lastname}}</li>
+    <li *ngFor="let user in users">{{user.firstname}} {{user.lastname}}</li>
 </ul>
 
 ```
@@ -177,7 +177,7 @@ import { SailsService } from 'angular2-sails';
 export class AppComponent implements OnInit {
 
     // declare the variable for the template
-    public users$:any[];
+    public users:any[];
 
     constructor(private _sailsService:SailsService) { }
 
@@ -186,7 +186,7 @@ export class AppComponent implements OnInit {
     this._sailsService
          .get('/users')
          .subscribe(
-            (resData) => { this.users$ = resData},
+            (resData) => { this.users = resData},
             (error) => { console.log("oooops, error occured") }
             () => { console.log("we are finished") }
         )
@@ -212,6 +212,7 @@ or even better, you use the *async* pipe of angular, and just pass the Observabl
 ```typescript
 import { Component, OnInit } from '@angular/core';
 import { SailsService } from 'angular2-sails';
+import { Observable } from "rxjs/Rx";
 
 @Component({
     moduleId: module.id,
@@ -221,7 +222,7 @@ import { SailsService } from 'angular2-sails';
 export class AppComponent implements OnInit {
 
     // declare the variable for the template
-    public users$:Observable<User[]>;
+    public users$:Observable<any[]>;
 
     constructor(private _sailsService:SailsService) { }
 
