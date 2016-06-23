@@ -12,3 +12,7 @@ nbproject/
 
 # RESOURCES
 node_modules/
+typings/
+*.spec.js
+*.spec.js.map
+*.spec.d.ts
