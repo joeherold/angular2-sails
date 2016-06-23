@@ -1,0 +1,43 @@
+{
+  "name": "angular2-sails",
+  "version": "0.0.1",
+  "description": "An angular module for using the sails socket.io api in angular2 (@angular)",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "typings install",
+    "prepublish": "typings install && tsc --outDir .",
+    "test": "tslint *.ts && typings install && tsc && karma start",
+    "typings": "typings install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joeherold/angular2-sails.git"
+  },
+  "keywords": [
+    "sails",
+    "sailsjs",
+    "socket",
+    "socket.io",
+    "io",
+    "angular",
+    "angular2",
+    "ng2"
+  ],
+  "author": "Johannes Pichler <j.pichler@webpixels.at>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joeherold/angular2-sails/issues"
+  },
+  "homepage": "https://github.com/joeherold/angular2-sails#readme",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "reflect-metadata": "0.1.3",
+    "@angular/core": "^2.0.0-rc.3",
+    "rxjs": "^5.0.0-beta.6",
+    "zone.js": "^0.6.12",
+    "typescript": "^1.9.0-dev.20160613-1.0",
+    "typings": "^0.8.1"
+  }
+}
