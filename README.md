@@ -148,7 +148,9 @@ ngOnInit() {
     this._sailsService.connect("http://localhost:1337");
     // or
     letl opts = {
-        url: "http://localhost:1337"
+        url: "http://localhost:1337",
+        transports: [...],
+        headers: {...}
     }
     this._sailsService.connect(opts);
 }
