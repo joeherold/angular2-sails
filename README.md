@@ -53,12 +53,11 @@ const packages:any = {
 
 ### 3. Using it
 
-1. the import statement looks like this: `
+#### the import statement looks like this:
 
-```import { SailsService } form 'angular2-sails';``
+```import { SailsService } form 'angular2-sails';```
 
-2. provide service
-You can provide the SailsService in a Component by the provider array or (not recommended) by providing it in the bootstrap of your application.
+#### You can provide the SailsService in a Component by the provider array or (not recommended) by providing it in the bootstrap of your application.
 
 Example in Component:
 ```typescript
@@ -99,7 +98,7 @@ export class MySubComponent implements OnInit {
 
 Example in bootstrap (not recommended):
 ```typescript
-
+...
 import { SailsService } from 'angular2-sails';
 
 bootstrap(AppComponent, [
@@ -107,4 +106,61 @@ bootstrap(AppComponent, [
   SailsService
 ]);
 
+
+// and then again in a component
+
+import { Component, OnInit } from '@angular/core';
+import { SailsService } from 'angular2-sails';
+
+@Component({
+    moduleId: module.id,
+    selector: 'app',
+    templateUrl: 'app.component.html',
+})
+export class AppComponent implements OnInit {
+    constructor(private _sailsService:SailsService) { }
+
+    ngOnInit() { }
+
+}
+
+```
+
+### working with it
+
+You inject the service by the constructor where you want to use it.
+
+```typescript
+constructor(private _sailsService:SailsService) { }
+```
+
+first you have to connect your service:
+
+```typescript
+ngOnInit() {
+    this._sailsService.connect()
+}
+```
+
+
+The following methods are implemented in the SailsService and will always return you an Observable<T>:
+
+- get(path,data):Observable
+- post(path,data):Observable
+- put(path,data):Observable
+- delete(path,data):Observable
+- request(options):Observable
+- on(eventEntity):Observable
+
+You then have to subscribe to that Observable, to get the data.
+
+EXAMPLE:
+```typescript
+this._sailsService
+     .get('/users')
+     .subscribe(
+        (resData) => { this.data = resData},
+        (error) => { console.log("oooops, error occured") }
+        () => { console.log("we are finished") }
+    )
 ```
