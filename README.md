@@ -154,6 +154,10 @@ ngOnInit() {
 }
 ```
 
+this is handy, when you develop with angular-cli (localhost:4200) and the ng serve command
+and your sails app runs separately e.g on localhost:1337
+
+
 
 
 The following methods are implemented in the SailsService and will always return you an Observable<T>:
