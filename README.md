@@ -154,13 +154,85 @@ The following methods are implemented in the SailsService and will always return
 
 You then have to subscribe to that Observable, to get the data.
 
-EXAMPLE:
+# EXAMPLE:
+
+```html
+
+<ul>
+    <li *ngFor="let user in users$">{{user.firstname}} {{user.lastname}}</li>
+</ul>
+
+```
+
 ```typescript
-this._sailsService
-     .get('/users')
-     .subscribe(
-        (resData) => { this.data = resData},
-        (error) => { console.log("oooops, error occured") }
-        () => { console.log("we are finished") }
-    )
+
+import { Component, OnInit } from '@angular/core';
+import { SailsService } from 'angular2-sails';
+
+@Component({
+    moduleId: module.id,
+    selector: 'app',
+    templateUrl: 'app.component.html',
+})
+export class AppComponent implements OnInit {
+
+    // declare the variable for the template
+    public users$:any[];
+
+    constructor(private _sailsService:SailsService) { }
+
+    ngOnInit() {
+
+    this._sailsService
+         .get('/users')
+         .subscribe(
+            (resData) => { this.users$ = resData},
+            (error) => { console.log("oooops, error occured") }
+            () => { console.log("we are finished") }
+        )
+
+    }
+
+}
+
+
+```
+
+# EXAMPLE with Async Pipe
+or even better, you use the *async* pipe of angular, and just pass the Observable to it
+
+```html
+
+<ul>
+    <li *ngFor="let user in users$ | async">{{user.firstname}} {{user.lastname}}</li>
+</ul>
+
+```
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { SailsService } from 'angular2-sails';
+
+@Component({
+    moduleId: module.id,
+    selector: 'app',
+    templateUrl: 'app.component.html',
+})
+export class AppComponent implements OnInit {
+
+    // declare the variable for the template
+    public users$:Observable<User[]>;
+
+    constructor(private _sailsService:SailsService) { }
+
+    ngOnInit() {
+
+    // now we are passing the Observable to the template variable
+    this.users$ = this._sailsService.get('/users');
+
+    }
+
+}
+
+
 ```
