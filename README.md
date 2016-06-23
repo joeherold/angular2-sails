@@ -1,6 +1,19 @@
 # angular2-sails
 An angular module for using the sails socket.io api in angular2 (@angular)
 
+## INDEX
+
+* [Usage with angular-cli](#usage-with-angular-cli)
+* [Installing](#1-installing)
+* [Configure angular-cli](#2-configure-angular-cli)
+    * [app_rootangular-cli-build.js](#app_rootangular-cli-buildjs)
+    * [system-config.ts](#app_rootsrcsystem-configts)
+* [Using it](#3-using-it)
+
+* [Working with it](#working-with-it)
+* [Example](#example)
+* [Example with async pipe](#example-with-async-pipe)
+
 ## Usage with angular-cli
 Angular-cli is a great angular2 app starter for creating fancy angular stuff.
 
@@ -11,7 +24,7 @@ install the package with the node package manager (npm)
 
 ```npm install --save angular2-sails```
 
-### 2. Configre angular-cli
+### 2. Configure angular-cli
 
 #### APP_ROOT/angular-cli-build.js
 Here you may add a line of code, to add the package to your vendor files
