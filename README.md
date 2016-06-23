@@ -142,6 +142,19 @@ ngOnInit() {
 }
 ```
 
+you can pass in an Url or Options, where to connect to
+```typescript
+ngOnInit() {
+    this._sailsService.connect("http://localhost:1337");
+    // or
+    letl opts = {
+        url: "http://localhost:1337"
+    }
+    this._sailsService.connect(opts);
+}
+```
+
+
 
 The following methods are implemented in the SailsService and will always return you an Observable<T>:
 
