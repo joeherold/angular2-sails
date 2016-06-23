@@ -11,8 +11,10 @@ Thumbs.db
 nbproject/
 
 # RESOURCES
+dist/
 node_modules/
 typings/
 *.spec.js
 *.spec.js.map
 *.spec.d.ts
+
