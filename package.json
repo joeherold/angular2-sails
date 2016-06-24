@@ -7,7 +7,6 @@
     "postinstall": "typings install",
     "prepublish": "typings install && rm -rf dist && tsc -p src",
     "build": "rm -rf dist && tsc -p src",
-    "build:index": "tsc index.ts",
     "test": "tslint *.ts && typings install && tsc && karma start",
     "typings": "typings install"
   },
