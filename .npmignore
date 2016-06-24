@@ -1,1 +1,16 @@
+# OS
+.DS_Store
+Thumbs.db
 
+# IDEs
+.buildpath
+.project
+.settings/
+.build/
+.idea/
+nbproject/
+
+# IDEs
+node_modules/
+typings/
+dist/
