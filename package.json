@@ -1,6 +1,6 @@
 {
   "name": "angular2-sails",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "An angular module for using the sails socket.io api in angular2 (@angular)",
   "main": "index.js",
   "scripts": {
