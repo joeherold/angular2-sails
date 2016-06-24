@@ -1,11 +1,13 @@
 {
   "name": "angular2-sails",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "An angular module for using the sails socket.io api in angular2 (@angular)",
   "main": "index.js",
   "scripts": {
     "postinstall": "typings install",
-    "prepublish": "typings install && tsc --outDir ./dist",
+    "prepublish": "typings install && rm -rf dist && tsc -p src",
+    "build": "rm -rf dist && tsc -p src",
+    "build:index": "tsc index.ts",
     "test": "tslint *.ts && typings install && tsc && karma start",
     "typings": "typings install"
   },

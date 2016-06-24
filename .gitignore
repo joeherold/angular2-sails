@@ -10,6 +10,9 @@ Thumbs.db
 .idea/
 nbproject/
 
+# LOGs
+npm-debug.log
+
 # RESOURCES
 dist/
 node_modules/
@@ -17,5 +20,4 @@ typings/
 *.spec.js
 *.spec.js.map
 *.spec.d.ts
-npm-debug.log
 

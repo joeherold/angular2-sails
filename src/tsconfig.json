@@ -1,22 +1,25 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": false,
-    "outDir": "./dist/",
-    "rootDir": ".",
+    "outDir": "../dist",
     "sourceMap": true,
     "target": "es5",
-    "inlineSources": true
+    "inlineSources": true,
+    "removeComments": true
   },
-
+  "exclude": [
+    "../node_modules"
+  ],
   "files": [
     "index.ts",
+    "sails.service.ts",
     "typings.d.ts"
   ]
 }

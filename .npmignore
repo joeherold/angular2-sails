@@ -10,7 +10,10 @@ Thumbs.db
 .idea/
 nbproject/
 
-# IDEs
+# LOGs
+npm-debug.log
+
+# RESOURCES
 node_modules/
 typings/
-npm-debug.log
+src
