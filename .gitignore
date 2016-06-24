@@ -17,4 +17,5 @@ typings/
 *.spec.js
 *.spec.js.map
 *.spec.d.ts
+npm-debug.log
 
