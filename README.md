@@ -41,7 +41,7 @@ module.exports = function (defaults) {
   return new Angular2App(defaults, {
     vendorNpmFiles: [
      ...
-      'angular2-sails/**/*.+(js|js.map)',
+      'angular2-sails/dist/**/*.+(js|js.map)',
     ]
   })
     ;
