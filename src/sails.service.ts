@@ -7,7 +7,7 @@ declare let io:any;
 if (io && io.sails) {
 
 
-  if (io && io.socket && io.socket.isConnected) {
+  if (io && io.socket && io.socket.isConnected()) {
     io.socket.disconnect();
   }
 
