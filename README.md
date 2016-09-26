@@ -212,7 +212,7 @@ You then have to subscribe to that Observable, to get the data.
 ```html
 
 <ul>
-    <li *ngFor="let user in users">{{user.firstname}} {{user.lastname}}</li>
+    <li *ngFor="let user of users">{{user.firstname}} {{user.lastname}}</li>
 </ul>
 
 ```
@@ -259,7 +259,7 @@ or even better, you use the *async* pipe of angular, and just pass the Observabl
 ```html
 
 <ul>
-    <li *ngFor="let user in users$ | async">{{user.firstname}} {{user.lastname}}</li>
+    <li *ngFor="let user of users$ | async">{{user.firstname}} {{user.lastname}}</li>
 </ul>
 
 ```
