@@ -26,7 +26,6 @@ interface  A2SResponse {
     statusCode:number;
     response:IJWRes;
     error?:any;
-
 }
 
 @Injectable()
@@ -144,7 +143,7 @@ export class SailsService {
      * @param options
      * @return {Observable<T>}
      */
-    request(options:any):Observable<A2SResponse> {
+    request(options:any):Observable<any> {
         let subject = new Subject();
 
         this.zone.runOutsideAngular(()=> {
@@ -181,7 +180,7 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    get(url, data?:any):Observable<A2SResponse> {
+    get(url, data?:any):Observable<any> {
         let subject = new Subject();
         this.zone.runOutsideAngular(()=> {
             this._io.get(`${this._restPrefix}${url}`, data, (resData, jwres:IJWRes)=> {
@@ -215,7 +214,7 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    post(url, data?:any):Observable<A2SResponse> {
+    post(url, data?:any):Observable<any> {
 
         let subject = new Subject();
 
@@ -252,7 +251,7 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    put(url, data?:any):Observable<A2SResponse> {
+    put(url, data?:any):Observable<any> {
 
         let subject = new Subject();
 
@@ -289,7 +288,7 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    delete(url, data?:any):Observable<A2SResponse> {
+    delete(url, data?:any):Observable<any> {
 
         let subject = new Subject();
         this.zone.runOutsideAngular(()=> {
