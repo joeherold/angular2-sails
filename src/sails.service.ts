@@ -21,6 +21,14 @@ interface IJWRes {
     statusCode:number
 }
 
+interface  A2SResponse {
+    data:any;
+    statusCode:number;
+    response:IJWRes;
+    error?:any;
+
+}
+
 @Injectable()
 export class SailsService {
 
@@ -136,7 +144,7 @@ export class SailsService {
      * @param options
      * @return {Observable<T>}
      */
-    request(options:any):Observable<any> {
+    request(options:any):Observable<A2SResponse> {
         let subject = new Subject();
 
         this.zone.runOutsideAngular(()=> {
@@ -148,9 +156,18 @@ export class SailsService {
                     console.log("request:jwr", jwres)
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error(jwres.error)
+                    subject.error({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres,
+                        error: jwres.error
+                    })
                 } else {
-                    this.zone.run(() => subject.next(resData));
+                    this.zone.run(() => subject.next({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres
+                    }));
                 }
                 subject.complete();
             })
@@ -164,7 +181,7 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    get(url, data?:any):Observable<any> {
+    get(url, data?:any):Observable<A2SResponse> {
         let subject = new Subject();
         this.zone.runOutsideAngular(()=> {
             this._io.get(`${this._restPrefix}${url}`, data, (resData, jwres:IJWRes)=> {
@@ -173,9 +190,18 @@ export class SailsService {
                     console.log("get:jwr", jwres)
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error(jwres.error)
+                    subject.error({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres,
+                        error: jwres.error
+                    })
                 } else {
-                    this.zone.run(() => subject.next(resData));
+                    this.zone.run(() => subject.next({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres
+                    }));
                 }
                 subject.complete();
             })
@@ -189,7 +215,7 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    post(url, data?:any):Observable<any> {
+    post(url, data?:any):Observable<A2SResponse> {
 
         let subject = new Subject();
 
@@ -201,9 +227,18 @@ export class SailsService {
                     console.log("post:jwr", jwres);
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error(jwres.error)
+                    subject.error({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres,
+                        error: jwres.error
+                    })
                 } else {
-                    this.zone.run(() => subject.next(resData));
+                    this.zone.run(() => subject.next({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres
+                    }));
                 }
                 subject.complete();
             })
@@ -217,7 +252,7 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    put(url, data?:any):Observable<any> {
+    put(url, data?:any):Observable<A2SResponse> {
 
         let subject = new Subject();
 
@@ -228,10 +263,19 @@ export class SailsService {
                     console.log("put:jwr", jwres);
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error(jwres.error)
+                    subject.error({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres,
+                        error: jwres.error
+                    })
                 } else {
                     //subject.next(resData);
-                    this.zone.run(() => subject.next(resData));
+                    this.zone.run(() => subject.next({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres
+                    }));
                 }
                 subject.complete();
             })
@@ -245,7 +289,7 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    delete(url, data?:any):Observable<any> {
+    delete(url, data?:any):Observable<A2SResponse> {
 
         let subject = new Subject();
         this.zone.runOutsideAngular(()=> {
@@ -255,9 +299,18 @@ export class SailsService {
                     console.log("delete:jwr", jwres);
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error(jwres.error)
+                    subject.error({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres,
+                        error: jwres.error
+                    })
                 } else {
-                    this.zone.run(() => subject.next(resData));
+                    this.zone.run(() => subject.next({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres
+                    }));
                 }
                 subject.complete();
             })
