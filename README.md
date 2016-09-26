@@ -239,12 +239,30 @@ export class AppComponent implements OnInit {
     this._sailsService
          .get('/users')
          .subscribe(
-            (resData) => { this.users = resData},
+            (resData) => { this.users = resData.data},
             (error) => { console.log("oooops, error occured") }
             () => { console.log("we are finished") }
         )
 
     }
+    
+    /*
+     * explanation of observable response object
+     * 
+     * resData = {
+     *      data: <object>,
+     *      statusCode: <number>,
+     *      response: <jwres>,
+     *      error: <undefined>
+     * }
+     * 
+     * error = {
+     *      data: null,
+     *      statusCode: <number>,
+     *      response: <jwres>,
+     *      error: <jwres.error>
+     * }
+     */
 
 }
 
