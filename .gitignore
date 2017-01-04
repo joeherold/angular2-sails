@@ -20,7 +20,8 @@ typings/
 *.spec.js
 *.spec.js.map
 *.spec.d.ts
-
+*.js
+*.js.map
 
 /compiled
 *.metadata.json
