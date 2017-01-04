@@ -1,14 +1,15 @@
 {
   "name": "angular2-sails",
-  "version": "0.1.4",
-  "description": "An angular module for using the sails socket.io api in angular2 (@angular)",
+  "version": "0.2.0",
+  "description": "An angular module for using the sails socket.io api in angular2 (@angular) with webpack and AoT compilation",
   "main": "index.js",
   "scripts": {
-    "postinstall": "typings install",
-    "prepublish": "typings install && rm -rf dist && tsc -p src",
-    "build": "rm -rf dist && tsc -p src",
-    "test": "tslint *.ts && typings install && tsc && karma start",
-    "typings": "typings install"
+    "postinstall": "",
+    "prepublish": "ngc",
+    "build": "ngc",
+    "pack": "npm pack ../",
+    "test": "tslint *.ts && ngc && karma start",
+    "ngc": "ngc"
   },
   "repository": {
     "type": "git",
@@ -30,15 +31,17 @@
     "url": "https://github.com/joeherold/angular2-sails/issues"
   },
   "homepage": "https://github.com/joeherold/angular2-sails#readme",
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
-    "reflect-metadata": "0.1.3",
-    "@angular/core": "^2.0.0-rc.3",
-    "rxjs": "^5.0.0-beta.6",
-    "zone.js": "^0.6.12",
-    "typescript": "^1.9.0-dev.20160613-1.0",
-    "typings": "^0.8.1"
+    "@angular/common": "^2.4.1",
+    "@angular/compiler": "^2.4.1",
+    "@angular/compiler-cli": "^2.4.1",
+    "@angular/core": "^2.4.1",
+    "@angular/platform-browser": "^2.4.1",
+    "@angular/platform-server": "^2.4.1",
+    "@types/node": "^6.0.54",
+    "rxjs": "^5.0.2",
+    "typescript": "2.0.10",
+    "zone.js": "^0.7.2"
   }
 }

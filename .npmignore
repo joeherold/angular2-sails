@@ -17,3 +17,10 @@ npm-debug.log
 node_modules/
 typings/
 src
+
+/compiled
+*.ngFactory.ts
+# ignore all typescript
+*.ts
+# allow only ambient type definitions
+!*.d.ts

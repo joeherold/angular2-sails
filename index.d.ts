@@ -1,1 +1,2 @@
-export * from "./dist/index"
+export { SailsService } from './lib/sails.service';
+export { SailsModule } from './lib/sails.module';

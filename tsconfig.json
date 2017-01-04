@@ -1,0 +1,36 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "",
+    "target": "es5",
+    "module": "es6",
+    "moduleResolution": "node",
+    "declaration": true,
+    "noImplicitAny": false,
+    "sourceMap": true,
+    //"mapRoot": "dist",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    //"outDir": "../",
+
+    "skipLibCheck": true,
+    "typeRoots": [ "./node_modules/@types" ],
+    "types": [
+      "node"
+    ],
+    "lib": ["es6", "es2015", "dom"]
+
+
+  },
+  "angularCompilerOptions": {
+    "genDir": "./compiled"
+  },
+  "exclude": [
+    "./node_modules"
+  ],
+  "files": [
+    "index.ts",
+    "lib/sails.service.ts",
+    "lib/sails.module.ts"
+  ]
+}

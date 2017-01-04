@@ -21,3 +21,9 @@ typings/
 *.spec.js.map
 *.spec.d.ts
 
+
+/compiled
+*.metadata.json
+
+*.map.js
+*.js  # or /src/**/*.js
