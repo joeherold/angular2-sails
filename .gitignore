@@ -27,4 +27,4 @@ typings/
 *.metadata.json
 
 *.map.js
-*.js  # or /src/**/*.js
+*.d.ts
