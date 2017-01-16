@@ -9,6 +9,7 @@ An angular module for using the sails socket.io api in angular2 (@angular)
 * [Working with it](#working-with-it)
 * [Example](#example)
 * [Example with async pipe](#example-with-async-pipe)
+* [Important notes to io.js (sails.io.js)](#important-notes)
 
 ## Usage with angular-cli
 Angular-cli is a great angular2 app starter for creating fancy angular stuff.
@@ -205,5 +206,80 @@ export class AppComponent implements OnInit {
 
 
 ```
+
+[back to top](#index)
+
+# IMPORTANT NOTES
+## io (sails.io.js)
+I was asked couple of times, why one gets an error like (io is not defined).
+So to clear things up a bit. The io library (sails.io.js) is not part of this module. So that's why you have to add io (sail.io.js) yourself to your project. Otherwise io will not be defined as a global varable and will not be accessible.
+
+There are several ways to do so:
+
+### by script tag
+One is to link the sail.io.js in your index.html or layout.ejs as a simple script tag.
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Sailsapp</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root>Loading...</app-root>
+
+  <!-- add the io library -->
+  <script src="/assets/sails.io/sails.io.js"></script>
+</body>
+</html>
+```
+
+
+### angular-cli (webpack version)
+When you are using angular-cli (what is my recommendation), then you can add the file to the scripts array of your angular-cli.json.
+
+```json
+{
+  "project": {
+    ...
+  },
+  "apps": [
+    {
+      "root": "src",
+      "outDir": "dist",
+      "assets": [
+        "assets",
+        "favicon.ico"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "test": "test.ts",
+      "tsconfig": "tsconfig.json",
+      "prefix": "app",
+      "mobile": false,
+      "styles": [
+        "styles.less"
+      ],
+      "scripts": [
+      	"../path/to/sails.io.js" //this is where you may add the io library
+      ],
+      "environments": {
+        "source": "environments/environment.ts",
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  ...
+}
+```
+
+### plain webpack
+When you are using webpack, you also could add the sails.io.js file to your project by installing the library and requireing it.
 
 [back to top](#index)
