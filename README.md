@@ -250,29 +250,14 @@ When you are using angular-cli (what is my recommendation), then you can add the
   },
   "apps": [
     {
-      "root": "src",
-      "outDir": "dist",
-      "assets": [
-        "assets",
-        "favicon.ico"
-      ],
-      "index": "index.html",
-      "main": "main.ts",
-      "test": "test.ts",
-      "tsconfig": "tsconfig.json",
-      "prefix": "app",
-      "mobile": false,
+      ...
       "styles": [
         "styles.less"
       ],
       "scripts": [
       	"../path/to/sails.io.js" //this is where you may add the io library
       ],
-      "environments": {
-        "source": "environments/environment.ts",
-        "dev": "environments/environment.ts",
-        "prod": "environments/environment.prod.ts"
-      }
+      ...
     }
   ],
   ...
