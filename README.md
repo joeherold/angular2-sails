@@ -244,6 +244,7 @@ One is to link the sail.io.js in your index.html or layout.ejs as a simple scrip
 When you are using angular-cli (what is my recommendation), then you can add the file to the scripts array of your angular-cli.json.
 
 ```javascript
+// ANGULAR_CLI_ROOT/angular-cli.json
 {
   "project": {
     ...
