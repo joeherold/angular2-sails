@@ -1,4 +1,7 @@
-# EXAMPLE:
+# EXAMPLES:
+
+## Common EXAMPLE
+
 
 ```html
 
@@ -59,9 +62,9 @@ export class AppComponent implements OnInit {
 
 ```
 
-[back to top](#index)
 
-# EXAMPLE with Async Pipe
+
+## EXAMPLE with Async Pipe
 or even better, you use the *async* pipe of angular, and just pass the Observable to it
 
 ```html
@@ -100,5 +103,4 @@ export class AppComponent implements OnInit {
 
 ```
 
-[back to top](#index)
 
