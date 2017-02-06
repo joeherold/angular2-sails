@@ -1,7 +1,7 @@
 # angular2-sails
 An angular module for using the sails socket.io api in angular2 (@angular)
 
-Read the full documentation at: [Documentation @ gitbook.com](https://www.gitbook.com/book/joeherold/angular2-sails "Documentation @ gitbook.com")
+Read the full documentation at: [Documentation @ gitbook.com](https://www.gitbook.com/book/joeherold/angular2-sails/content "Documentation @ gitbook.com")
 
 ## INDEX
 
