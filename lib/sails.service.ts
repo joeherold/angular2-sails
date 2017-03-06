@@ -1,22 +1,8 @@
 import {Injectable, NgZone} from "@angular/core";
-import {Subject, Observable} from "rxjs";
+import {Subject, Observable} from "rxjs/Rx";
+
 
 declare let io: any;
-
-
-export declare interface ISailsConnection {
-    connected: boolean,
-    url: string,
-    opts: any
-}
-
-export declare interface IJWRes {
-    body: any;
-    error?: any;
-    headers: any;
-    statusCode: number
-}
-
 
 if (io && io.sails) {
 
@@ -28,26 +14,39 @@ if (io && io.sails) {
 
 }
 
+interface IJWRes {
+    body: any;
+    error?: any;
+    headers: any;
+    statusCode: number
+}
 
+interface  A2SResponse {
+    data: any;
+    statusCode: number;
+    response: IJWRes;
+    error?: any;
+}
 
 @Injectable()
 export class SailsService {
+
+
+
+
     private _io: any;
     private _connected: boolean = false;
     private _opts: any
     private _restPrefix: string = "";
     private _serverUrl: string;
     private _pubsubSubscriptions: any;
+
     public silent:boolean = false;
 
     //public observable: Observable<boolean>;
     public subject = new Subject();
 
 
-    /**
-     *
-     * @param zone
-     */
     constructor(private zone: NgZone) {
 
         this._pubsubSubscriptions = {};
@@ -59,18 +58,10 @@ export class SailsService {
 
     }
 
-    /**
-     *
-     * @returns {string}
-     */
     get restPrefix(): string {
         return this._restPrefix;
     }
 
-    /**
-     *
-     * @param value
-     */
     set restPrefix(value: string) {
         if (value.length > 0) {
             if (value.charAt((value.length - 1)) == "/") {
@@ -80,18 +71,11 @@ export class SailsService {
         }
     }
 
-    /**
-     *
-     * @returns {string}
-     */
+
     get serverUrl(): string {
         return this._serverUrl;
     }
 
-    /**
-     *
-     * @param value
-     */
     set serverUrl(value: string) {
         if (value.length > 0) {
             if (value.charAt((value.length - 1)) == "/") {
@@ -101,9 +85,6 @@ export class SailsService {
         }
     }
 
-    /**
-     *
-     */
     public disconnect(): void {
         if (this._io && this._io.sails) {
             if (this._io && this._io.socket && this._io.socket.isConnected) {
@@ -113,16 +94,10 @@ export class SailsService {
         }
     }
 
-    /**
-     *
-     * @param url
-     * @param opts
-     * @returns {Observable<T>}
-     */
-    public connect(url, opts?): Observable<ISailsConnection> {
+    public connect(url, opts?): Observable<any> {
 
         var self = this;
-        let subject = new Subject<ISailsConnection>();
+        let subject = new Subject();
 
 
         if (this._io && this._io.sails) {
@@ -241,7 +216,7 @@ export class SailsService {
 
         });
 
-        return <Observable<ISailsConnection>>subject.asObservable();
+        return subject.asObservable();
     }
 
 

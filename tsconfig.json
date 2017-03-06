@@ -8,14 +8,19 @@
     "declaration": true,
     "noImplicitAny": false,
     "sourceMap": true,
+    //"mapRoot": "dist",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    //"outDir": "../",
+
     "skipLibCheck": true,
     "typeRoots": [ "./node_modules/@types" ],
     "types": [
       "node"
     ],
     "lib": ["es6", "es2015", "dom"]
+
+
   },
   "angularCompilerOptions": {
     "genDir": "./compiled"
