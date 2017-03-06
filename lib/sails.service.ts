@@ -2,7 +2,7 @@ import {Injectable, NgZone} from "@angular/core";
 import {Subject, Observable} from "rxjs/Rx";
 
 
-declare let io:any;
+declare let io: any;
 
 if (io && io.sails) {
 
@@ -15,31 +15,39 @@ if (io && io.sails) {
 }
 
 interface IJWRes {
-    body:any;
-    error?:any;
-    headers:any;
-    statusCode:number
+    body: any;
+    error?: any;
+    headers: any;
+    statusCode: number
 }
 
 interface  A2SResponse {
-    data:any;
-    statusCode:number;
-    response:IJWRes;
-    error?:any;
+    data: any;
+    statusCode: number;
+    response: IJWRes;
+    error?: any;
 }
 
 @Injectable()
 export class SailsService {
 
-    private _io:any;
-    private _connected:boolean = false;
-    private _opts:any
-    private _restPrefix:string = "";
-    private _serverUrl:string;
-    private _pubsubSubscriptions:any;
 
 
-    constructor(private zone:NgZone) {
+
+    private _io: any;
+    private _connected: boolean = false;
+    private _opts: any
+    private _restPrefix: string = "";
+    private _serverUrl: string;
+    private _pubsubSubscriptions: any;
+
+    public silent:boolean = false;
+
+    //public observable: Observable<boolean>;
+    public subject = new Subject();
+
+
+    constructor(private zone: NgZone) {
 
         this._pubsubSubscriptions = {};
 
@@ -50,11 +58,11 @@ export class SailsService {
 
     }
 
-    get restPrefix():string {
+    get restPrefix(): string {
         return this._restPrefix;
     }
 
-    set restPrefix(value:string) {
+    set restPrefix(value: string) {
         if (value.length > 0) {
             if (value.charAt((value.length - 1)) == "/") {
                 value = value.substr(0, value.length - 1);
@@ -64,11 +72,11 @@ export class SailsService {
     }
 
 
-    get serverUrl():string {
+    get serverUrl(): string {
         return this._serverUrl;
     }
 
-    set serverUrl(value:string) {
+    set serverUrl(value: string) {
         if (value.length > 0) {
             if (value.charAt((value.length - 1)) == "/") {
                 value = value.substr(0, value.length - 1);
@@ -77,15 +85,31 @@ export class SailsService {
         }
     }
 
-    public connect(url, opts?):void {
+    public disconnect(): void {
+        if (this._io && this._io.sails) {
+            if (this._io && this._io.socket && this._io.socket.isConnected) {
+                this._io.disconnect();
+            }
 
-        if (this._connected) {
-            this._io.disconnect();
+        }
+    }
+
+    public connect(url, opts?): Observable<any> {
+
+        var self = this;
+        let subject = new Subject();
+
+
+        if (this._io && this._io.sails) {
+            if (this._io && this._io.socket && this._io.socket.isConnected) {
+                this._io.disconnect();
+            }
+
         }
 
         // Make URL optional
         if ('object' === typeof url) {
-            opts = url;
+            this._opts = Object.assign({}, url);
             url = null;
         }
 
@@ -96,7 +120,7 @@ export class SailsService {
             this.serverUrl = url;
         } else if (this._opts.url) {
             this.serverUrl = this._opts.url;
-        } else if (!(this._serverUrl.length > 0)) {
+        } else if (!(this._serverUrl && this._serverUrl.length > 0)) {
             this._serverUrl = undefined;
         }
         this._opts.url = this._serverUrl;
@@ -105,7 +129,94 @@ export class SailsService {
         // this._opts.url = url || this._opts.url || this._serverUrl;
 
         this._io = io.sails.connect(this._opts);
-        this._connected = true;
+
+        if (this._io && this._io.sails) {
+            if (this._io && this._io.socket && this._io.socket.isConnected) {
+                this._connected = true;
+            } else {
+                this._connected = false;
+                subject.next({
+                    connected: false,
+                    url: self.serverUrl,
+                    opts: self._opts
+                });
+            }
+
+        } else {
+            this._connected = false;
+            subject.next({
+                connected: false,
+                url: self.serverUrl,
+                opts: self._opts
+            });
+        }
+
+        this._io.on('connect_error', function () {
+
+            if (io.sails.environment != "production" && self.silent !== true) {
+                console.log('Connection failed');
+            }
+
+
+            subject.next({
+                connected: false,
+                url: self.serverUrl,
+                opts: self._opts
+            });
+        });
+        this._io.on('reconnect_failed', function () {
+
+            if (io.sails.environment != "production" && self.silent !== true) {
+                console.log('Client has not reconnected to the server!');
+            }
+            subject.next({
+                connected: false,
+                url: self.serverUrl,
+                opts: self._opts
+            });
+        });
+
+        this._io.on('reconnected', function () {
+
+            if (io.sails.environment != "production" && self.silent !== true) {
+                console.log('Client has reconnected to the server!');
+            }
+            subject.next({
+                connected: true,
+                url: self.serverUrl,
+                opts: self._opts
+            });
+        });
+
+
+        // Add a connect listener
+        this._io.on('connect', function () {
+            if (io.sails.environment != "production" && self.silent !== true) {
+                console.log('Client has connected to the server!');
+            }
+            subject.next({
+                connected: true,
+                url: self.serverUrl,
+                opts: self._opts
+            });
+            //subject.complete();
+
+        });
+
+        this._io.on('disconnect', function () {
+            if (io.sails.environment != "production" && self.silent !== true) {
+                console.log('Client has disconnected to the server!');
+            }
+            subject.next({
+                connected: false,
+                url: self.serverUrl,
+                opts: self._opts
+            });
+            //subject.complete();
+
+        });
+
+        return subject.asObservable();
     }
 
 
@@ -143,12 +254,12 @@ export class SailsService {
      * @param options
      * @return {Observable<T>}
      */
-    request(options:any):Observable<any> {
+    request(options: any): Observable<any> {
         let subject = new Subject();
 
-        this.zone.runOutsideAngular(()=> {
+        this.zone.runOutsideAngular(() => {
 
-            this._io.request(options, (resData, jwres:IJWRes) => {
+            this._io.request(options, (resData, jwres: IJWRes) => {
 
                 if (io.sails.environment != "production") {
                     console.log("request::data", resData)
@@ -180,11 +291,12 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    get(url, data?:any):Observable<any> {
+    get(url, data?: any): Observable<any> {
+        let self = this;
         let subject = new Subject();
-        this.zone.runOutsideAngular(()=> {
-            this._io.get(`${this._restPrefix}${url}`, data, (resData, jwres:IJWRes)=> {
-                if (io.sails.environment != "production") {
+        this.zone.runOutsideAngular(() => {
+            this._io.get(`${this._restPrefix}${url}`, data, (resData, jwres: IJWRes) => {
+                if (io.sails.environment != "production" && self.silent !== true) {
                     console.log("get::data", resData)
                     console.log("get:jwr", jwres)
                 }
@@ -214,14 +326,14 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    post(url, data?:any):Observable<any> {
-
+    post(url, data?: any): Observable<any> {
+        let self = this;
         let subject = new Subject();
 
-        this.zone.runOutsideAngular(()=> {
+        this.zone.runOutsideAngular(() => {
 
-            this._io.post(url, data, (resData, jwres:IJWRes)=> {
-                if (io.sails.environment != "production") {
+            this._io.post(url, data, (resData, jwres: IJWRes) => {
+                if (io.sails.environment != "production" && self.silent !== true) {
                     console.log("post::data", resData);
                     console.log("post:jwr", jwres);
                 }
@@ -251,13 +363,13 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    put(url, data?:any):Observable<any> {
-
+    put(url, data?: any): Observable<any> {
+        let self = this;
         let subject = new Subject();
 
-        this.zone.runOutsideAngular(()=> {
-            this._io.put(url, data, (resData, jwres:IJWRes)=> {
-                if (io.sails.environment != "production") {
+        this.zone.runOutsideAngular(() => {
+            this._io.put(url, data, (resData, jwres: IJWRes) => {
+                if (io.sails.environment != "production" && self.silent !== true) {
                     console.log("put::data", resData);
                     console.log("put:jwr", jwres);
                 }
@@ -288,12 +400,12 @@ export class SailsService {
      * @param data
      * @return {Observable<T>}
      */
-    delete(url, data?:any):Observable<any> {
-
+    delete(url, data?: any): Observable<any> {
+        let self = this;
         let subject = new Subject();
-        this.zone.runOutsideAngular(()=> {
-            this._io.delete(url, data, (resData, jwres:IJWRes)=> {
-                if (io.sails.environment != "production") {
+        this.zone.runOutsideAngular(() => {
+            this._io.delete(url, data, (resData, jwres: IJWRes) => {
+                if (io.sails.environment != "production" && self.silent !== true) {
                     console.log("delete::data", resData);
                     console.log("delete:jwr", jwres);
                 }
@@ -322,17 +434,17 @@ export class SailsService {
      * @param eventIdentity
      * @return {Observable<T>}
      */
-    on(eventIdentity:string):Observable<any> {
-
+    on(eventIdentity: string): Observable<any> {
+        let self = this;
         if (!this._pubsubSubscriptions[eventIdentity] || this._pubsubSubscriptions[eventIdentity].isComplete) {
             this._pubsubSubscriptions[eventIdentity] = new Subject();
-            this.zone.runOutsideAngular(()=> {
+            this.zone.runOutsideAngular(() => {
                 this._io.on(eventIdentity, msg => {
 
-                    if (io.sails.environment != "production") {
+                    if (io.sails.environment != "production" && self.silent !== true) {
                         console.log(`on::${eventIdentity}`, msg);
                     }
-                    this.zone.run(()=> this._pubsubSubscriptions[eventIdentity].next(msg));
+                    this.zone.run(() => this._pubsubSubscriptions[eventIdentity].next(msg));
                 })
             })
         }

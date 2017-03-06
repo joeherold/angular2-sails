@@ -1,6 +1,6 @@
 {
   "name": "angular2-sails",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "An angular module for using the sails socket.io api in angular2 (@angular) with webpack and AoT compilation",
   "main": "index.js",
   "scripts": {
@@ -40,7 +40,7 @@
     "@angular/platform-browser": "^2.4.1",
     "@angular/platform-server": "^2.4.1",
     "@types/node": "^6.0.54",
-    "rxjs": "^5.0.2",
+    "rxjs": "^5.0.1",
     "typescript": "2.0.10",
     "zone.js": "^0.7.2"
   }
