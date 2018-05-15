@@ -419,6 +419,43 @@ export class SailsService {
         return subject.asObservable();
     }
 
+        /**
+     *
+     * @param url
+     * @param data
+     * @return {Observable<T>}
+     */
+    patch(url, data?: any): Observable<any> {
+        let self = this;
+        let subject = new Subject();
+
+        this.zone.runOutsideAngular(() => {
+            this._io.patch(url, data, (resData, jwres: IJWRes) => {
+                if (io.sails.environment != "production" && self.silent !== true) {
+                    console.log("patch::data", resData);
+                    console.log("patch:jwr", jwres);
+                }
+                if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
+                    subject.error({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres,
+                        error: jwres.error
+                    })
+                } else {
+                    //subject.next(resData);
+                    this.zone.run(() => subject.next({
+                        data: resData,
+                        statusCode: jwres.statusCode,
+                        response: jwres
+                    }));
+                }
+                subject.complete();
+            })
+        });
+        return subject.asObservable();
+    }
+
     /**
      *
      * @param url
