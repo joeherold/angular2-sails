@@ -97,6 +97,7 @@ The following methods are implemented in the SailsService and will always return
 - get(path,data):Observable
 - post(path,data):Observable
 - put(path,data):Observable
+- patch(path,data):Observable
 - delete(path,data):Observable
 - request(options):Observable
 - on(eventEntity):Observable
