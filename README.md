@@ -1,3 +1,7 @@
+# important
+This repo is no longer maintained! We switched to [React JS](https://reactjs.org/) completely. Feel free to fork this repo.
+
+
 # angular2-sails
 An angular module for using the sails socket.io api in angular2 (@angular)
 
