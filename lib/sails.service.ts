@@ -124,123 +124,121 @@ export class SailsService {
         var self = this;
         let subject = new Subject<ISailsConnection>();
 
+        this.zone.runOutsideAngular(() => {
+            if (this._io && this._io.sails) {
+                if (this._io && this._io.socket && this._io.socket.isConnected) {
+                    this._io.disconnect();
+                }
 
-        if (this._io && this._io.sails) {
-            if (this._io && this._io.socket && this._io.socket.isConnected) {
-                this._io.disconnect();
             }
 
-        }
+            // Make URL optional
+            if ('object' === typeof url) {
+                this._opts = Object.assign({}, url);
+                url = null;
+            }
 
-        // Make URL optional
-        if ('object' === typeof url) {
-            this._opts = Object.assign({}, url);
-            url = null;
-        }
+            // this._url = url || null;
+            // this._opts = opts || {}
 
-        // this._url = url || null;
-        // this._opts = opts || {}
+            if (url) {
+                this.serverUrl = url;
+            } else if (this._opts.url) {
+                this.serverUrl = this._opts.url;
+            } else if (!(this._serverUrl && this._serverUrl.length > 0)) {
+                this._serverUrl = undefined;
+            }
+            this._opts.url = this._serverUrl;
 
-        if (url) {
-            this.serverUrl = url;
-        } else if (this._opts.url) {
-            this.serverUrl = this._opts.url;
-        } else if (!(this._serverUrl && this._serverUrl.length > 0)) {
-            this._serverUrl = undefined;
-        }
-        this._opts.url = this._serverUrl;
+            // // If explicit connection url is specified, save it to options
+            // this._opts.url = url || this._opts.url || this._serverUrl;
 
-        // // If explicit connection url is specified, save it to options
-        // this._opts.url = url || this._opts.url || this._serverUrl;
+            this._io = io.sails.connect(this._opts);
 
-        this._io = io.sails.connect(this._opts);
+            if (this._io && this._io.sails) {
+                if (this._io && this._io.socket && this._io.socket.isConnected) {
+                    this._connected = true;
+                } else {
+                    this._connected = false;
+                    this.zone.run(() => subject.next({
+                        connected: false,
+                        url: self.serverUrl,
+                        opts: self._opts
+                    }));
+                }
 
-        if (this._io && this._io.sails) {
-            if (this._io && this._io.socket && this._io.socket.isConnected) {
-                this._connected = true;
             } else {
                 this._connected = false;
-                subject.next({
+                this.zone.run(() => subject.next({
                     connected: false,
                     url: self.serverUrl,
                     opts: self._opts
-                });
+                }));
             }
 
-        } else {
-            this._connected = false;
-            subject.next({
-                connected: false,
-                url: self.serverUrl,
-                opts: self._opts
+            this._io.on('connect_error', () => {
+
+                if (io.sails.environment != "production" && self.silent !== true) {
+                    console.log('Connection failed');
+                }
+                this.zone.run(() => subject.next({
+                    connected: false,
+                    url: self.serverUrl,
+                    opts: self._opts
+                }));
             });
-        }
+            this._io.on('reconnect_failed', () => {
 
-        this._io.on('connect_error', function () {
+                if (io.sails.environment != "production" && self.silent !== true) {
+                    console.log('Client has not reconnected to the server!');
+                }
+                this.zone.run(() => subject.next({
+                    connected: false,
+                    url: self.serverUrl,
+                    opts: self._opts
+                }));
+            });
 
-            if (io.sails.environment != "production" && self.silent !== true) {
-                console.log('Connection failed');
-            }
+            this._io.on('reconnected', () => {
+
+                if (io.sails.environment != "production" && self.silent !== true) {
+                    console.log('Client has reconnected to the server!');
+                }
+                this.zone.run(() => subject.next({
+                    connected: true,
+                    url: self.serverUrl,
+                    opts: self._opts
+                }));
+            });
 
 
-            subject.next({
-                connected: false,
-                url: self.serverUrl,
-                opts: self._opts
+            // Add a connect listener
+            this._io.on('connect', () => {
+                if (io.sails.environment != "production" && self.silent !== true) {
+                    console.log('Client has connected to the server!');
+                }
+                this.zone.run(() => subject.next({
+                    connected: true,
+                    url: self.serverUrl,
+                    opts: self._opts
+                }));
+                //subject.complete();
+
+            });
+
+            this._io.on('disconnect', () =>  {
+                if (io.sails.environment != "production" && self.silent !== true) {
+                    console.log('Client has disconnected to the server!');
+                }
+                this.zone.run(() => subject.next({
+                    connected: false,
+                    url: self.serverUrl,
+                    opts: self._opts
+                }));
+                //subject.complete();
+
             });
         });
-        this._io.on('reconnect_failed', function () {
-
-            if (io.sails.environment != "production" && self.silent !== true) {
-                console.log('Client has not reconnected to the server!');
-            }
-            subject.next({
-                connected: false,
-                url: self.serverUrl,
-                opts: self._opts
-            });
-        });
-
-        this._io.on('reconnected', function () {
-
-            if (io.sails.environment != "production" && self.silent !== true) {
-                console.log('Client has reconnected to the server!');
-            }
-            subject.next({
-                connected: true,
-                url: self.serverUrl,
-                opts: self._opts
-            });
-        });
-
-
-        // Add a connect listener
-        this._io.on('connect', function () {
-            if (io.sails.environment != "production" && self.silent !== true) {
-                console.log('Client has connected to the server!');
-            }
-            subject.next({
-                connected: true,
-                url: self.serverUrl,
-                opts: self._opts
-            });
-            //subject.complete();
-
-        });
-
-        this._io.on('disconnect', function () {
-            if (io.sails.environment != "production" && self.silent !== true) {
-                console.log('Client has disconnected to the server!');
-            }
-            subject.next({
-                connected: false,
-                url: self.serverUrl,
-                opts: self._opts
-            });
-            //subject.complete();
-
-        });
-
         return <Observable<ISailsConnection>>subject.asObservable();
     }
 
@@ -291,12 +289,13 @@ export class SailsService {
                     console.log("request:jwr", jwres)
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error({
+                    this.zone.run(() => subject.error({
                         data: resData,
                         statusCode: jwres.statusCode,
                         response: jwres,
                         error: jwres.error
                     })
+                    );
                 } else {
                     this.zone.run(() => subject.next({
                         data: resData,
@@ -304,7 +303,7 @@ export class SailsService {
                         response: jwres
                     }));
                 }
-                subject.complete();
+                this.zone.run(() => subject.complete());
             })
         })
         return subject.asObservable();
@@ -326,12 +325,12 @@ export class SailsService {
                     console.log("get:jwr", jwres)
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error({
+                    this.zone.run(() => subject.error({
                         data: resData,
                         statusCode: jwres.statusCode,
                         response: jwres,
                         error: jwres.error
-                    })
+                    }));
                 } else {
                     this.zone.run(() => subject.next({
                         data: resData,
@@ -339,7 +338,7 @@ export class SailsService {
                         response: jwres
                     }));
                 }
-                subject.complete();
+                this.zone.run(() => subject.complete());
             })
         });
         return subject.asObservable();
@@ -363,12 +362,12 @@ export class SailsService {
                     console.log("post:jwr", jwres);
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error({
+                    this.zone.run(() => subject.error({
                         data: resData,
                         statusCode: jwres.statusCode,
                         response: jwres,
                         error: jwres.error
-                    })
+                    }));
                 } else {
                     this.zone.run(() => subject.next({
                         data: resData,
@@ -376,7 +375,7 @@ export class SailsService {
                         response: jwres
                     }));
                 }
-                subject.complete();
+                this.zone.run(() => subject.complete());
             })
         });
         return subject.asObservable();
@@ -399,12 +398,12 @@ export class SailsService {
                     console.log("put:jwr", jwres);
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error({
+                    this.zone.run(() => subject.error({
                         data: resData,
                         statusCode: jwres.statusCode,
                         response: jwres,
                         error: jwres.error
-                    })
+                    }));
                 } else {
                     //subject.next(resData);
                     this.zone.run(() => subject.next({
@@ -413,7 +412,7 @@ export class SailsService {
                         response: jwres
                     }));
                 }
-                subject.complete();
+                this.zone.run(() => subject.complete());
             })
         });
         return subject.asObservable();
@@ -436,12 +435,12 @@ export class SailsService {
                     console.log("patch:jwr", jwres);
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error({
+                    this.zone.run(() => subject.error({
                         data: resData,
                         statusCode: jwres.statusCode,
                         response: jwres,
                         error: jwres.error
-                    })
+                    }));
                 } else {
                     //subject.next(resData);
                     this.zone.run(() => subject.next({
@@ -450,7 +449,7 @@ export class SailsService {
                         response: jwres
                     }));
                 }
-                subject.complete();
+                this.zone.run(() => subject.complete());
             })
         });
         return subject.asObservable();
@@ -472,12 +471,12 @@ export class SailsService {
                     console.log("delete:jwr", jwres);
                 }
                 if (jwres.statusCode < 200 || jwres.statusCode >= 400) {
-                    subject.error({
+                    this.zone.run(() => subject.error({
                         data: resData,
                         statusCode: jwres.statusCode,
                         response: jwres,
                         error: jwres.error
-                    })
+                    }));
                 } else {
                     this.zone.run(() => subject.next({
                         data: resData,
@@ -485,7 +484,7 @@ export class SailsService {
                         response: jwres
                     }));
                 }
-                subject.complete();
+                this.zone.run(() => subject.complete());
             })
         });
         return subject.asObservable();
