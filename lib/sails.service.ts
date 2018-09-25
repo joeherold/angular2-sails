@@ -500,8 +500,6 @@ export class SailsService {
         if (!this._pubsubSubscriptions[eventIdentity] || this._pubsubSubscriptions[eventIdentity].isComplete) {
             this._pubsubSubscriptions[eventIdentity] = new Subject();
             this.zone.runOutsideAngular(() => {
-                //Remove all handlers for re-initialization
-                this._io.off(eventIdentity);
                 this._io.on(eventIdentity, msg => {
 
                     if (io.sails.environment != "production" && self.silent !== true) {
